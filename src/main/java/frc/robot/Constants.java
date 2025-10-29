@@ -48,9 +48,10 @@ public final class Constants
   }
 
   public static class ShooterConstants{
-    public static final int SHOOTER_ID= 25; //placeholder
-    public static final boolean SHOOTER_INVERTED = false; //maybe? idk
-    public static final ProfiledPIDController SHOOTER_PID = new ProfiledPIDController(SHOOTER_ID, SHOOTER_ID, SHOOTER_ID, null);//idk probably change
-    public static final double WHEEL_CIRCUMFERENCE = 0.67; //no clue defenitely change
+    public static final int SHOOTER_ID= 67; //placeholder
+    public static final boolean SHOOTER_INVERTED = false; //maybe change
+    public static final int SHOOTER_STALL_LIMIT = 30; //placeholder
+    public static final int SHOOTER_FREE_LIMIT = 25; //placeholder
+    public static final double DEFAULT_SHOOTER_VELOCITY = 1;//placeholder
   }
 }
