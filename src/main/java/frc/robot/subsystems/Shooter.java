@@ -6,6 +6,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -13,10 +15,11 @@ import frc.robot.Constants.ShooterConstants;
 public class Shooter extends SubsystemBase{
     private SparkMax shooter = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
         public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
+        private final DigitalInput limitswitch = new DigitalInput(1);
         public Shooter(){
             super();
             configureShooter();
-            SmartDashboard.putNumber("Shooter Velocity", 1);
+            SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
 
     }
     public void configureShooter(){
@@ -37,6 +40,16 @@ public class Shooter extends SubsystemBase{
 
     public void stop(){
         shooter.set(0);
+    }
+
+    @Override
+    public void periodic(){     //for testing
+        if(!limitswitch.get()){
+            shoot();
+        }
+        else{
+            stop();
+        }
     }
 }
 
