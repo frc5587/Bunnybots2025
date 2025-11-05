@@ -16,12 +16,13 @@ public class Shooter extends SubsystemBase{
     private SparkMax shooter = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
         public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
         private final DigitalInput limitswitch = new DigitalInput(1);
-        private double shooterVelocity;
+        private double shooterVelocityHigh = ShooterConstants.SHOOTER_VELOCITY_HIGH;
+        private double shooterVelocityLow = ShooterConstants.SHOOTER_VELOCITY_LOW;
         public Shooter(){
             super();
             configureShooter();
-            SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
-            SmartDashboard.putBoolean("Shooter Velocity Change", false);
+            // SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
+            // SmartDashboard.putBoolean("Shooter Velocity Change", false);
 
     }
     public void configureShooter(){
@@ -36,29 +37,33 @@ public class Shooter extends SubsystemBase{
     //     return shooterVelocity;
     // }
 
-    public void shoot(){
-        shooter.set(shooterVelocity);
+    public void shootHigh(){
+        shooter.set(shooterVelocityHigh);
     }    
 
+
+    public void shootLow(){
+        shooter.set(shooterVelocityLow);
+    }
     public void stop(){
         shooter.set(0);
     }
 
     @Override
-    public void periodic(){     //for testing
-        if(SmartDashboard.getBoolean("Shooter Velocity Change", false)){
-            shooterVelocity = SmartDashboard.getNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
-        }
-        SmartDashboard.putBoolean("Shooter Velocity Change", false);
+     public void periodic(){     //for testing
+    //     if(SmartDashboard.getBoolean("Shooter Velocity Change", false)){
+    //         shooterVelocity = SmartDashboard.getNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
+    //     }
+    //     SmartDashboard.putBoolean("Shooter Velocity Change", false);
 
 
 
-        if(!limitswitch.get()){
-            shoot();
-        }
-        else{
-            stop();
-        }
+        // if(!limitswitch.get()){
+        //     shootHigh();
+        // }
+        // else{
+        //     stop();
+        // }
     }
 }
 
