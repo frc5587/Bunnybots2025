@@ -16,10 +16,12 @@ public class Shooter extends SubsystemBase{
     private SparkMax shooter = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
         public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
         private final DigitalInput limitswitch = new DigitalInput(1);
+        private double shooterVelocity;
         public Shooter(){
             super();
             configureShooter();
             SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
+            SmartDashboard.putBoolean("Shooter Velocity Change", false);
 
     }
     public void configureShooter(){
@@ -29,13 +31,13 @@ public class Shooter extends SubsystemBase{
         shooter.configure(shooterConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
     }  
 
-    public double getShuffleboardShooterVelocity(){
-        double shooterVelocity = SmartDashboard.getNumber("Shooter Velocity",ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
-        return shooterVelocity;
-    }
+    // public double getShuffleboardShooterVelocity(){
+    //     double shooterVelocity = SmartDashboard.getNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
+    //     return shooterVelocity;
+    // }
 
     public void shoot(){
-        shooter.set(getShuffleboardShooterVelocity());
+        shooter.set(shooterVelocity);
     }    
 
     public void stop(){
@@ -44,6 +46,13 @@ public class Shooter extends SubsystemBase{
 
     @Override
     public void periodic(){     //for testing
+        if(SmartDashboard.getBoolean("Shooter Velocity Change", false)){
+            shooterVelocity = SmartDashboard.getNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
+        }
+        SmartDashboard.putBoolean("Shooter Velocity Change", false);
+
+
+
         if(!limitswitch.get()){
             shoot();
         }
