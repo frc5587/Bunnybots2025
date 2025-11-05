@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "flywheelHighGoal"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "loadLunite"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "loadLunite"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "loadLunite"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red Far CC to SS"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
