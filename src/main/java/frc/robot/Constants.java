@@ -52,6 +52,7 @@ public final class Constants
     public static final boolean SHOOTER_INVERTED = false; //maybe change
     public static final int SHOOTER_STALL_LIMIT = 30; //placeholder
     public static final int SHOOTER_FREE_LIMIT = 35; //placeholder
-    public static final double DEFAULT_SHOOTER_VELOCITY = 1;//placeholder
+    public static final double SHOOTER_VELOCITY_HIGH = 1.0;
+    public static final double SHOOTER_VELOCITY_LOW = 0.4;
   }
 }
