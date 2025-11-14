@@ -28,6 +28,14 @@ public class Intake extends SubsystemBase {
     intake.set(0);
   }
 
+  public void start() {
+    intake.set(IntakeConstants.INTAKE_SPEED);
+  }
+
+  public double getPosition() {
+    return intake.getAbsoluteEncoder().getPosition();
+  }
+
   @Override
   public void periodic() {
   }

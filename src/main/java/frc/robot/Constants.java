@@ -49,6 +49,8 @@ public final class Constants
 
   public static class IntakeConstants {
     public static int INTAKE_ID = 67;
+    public static double INTAKE_SPEED = 0.5f;
+    public static double LOAD_DISTANCE = 2f;
     public static boolean INTAKE_INVERTED = false;
     public static int INTAKE_STALL_LIMIT = 1;
     public static int INTAKE_FREE_LIMIT = 5700;
