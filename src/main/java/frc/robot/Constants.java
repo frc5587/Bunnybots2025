@@ -46,4 +46,11 @@ public final class Constants
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
   }
+
+  public static class IntakeConstants {
+    public static int INTAKE_ID = 67;
+    public static boolean INTAKE_INVERTED = false;
+    public static int INTAKE_STALL_LIMIT = 1;
+    public static int INTAKE_FREE_LIMIT = 5700;
+  }
 }
