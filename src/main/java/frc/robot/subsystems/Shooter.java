@@ -13,18 +13,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase{
-    private SparkMax shooter = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
-        public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
-        private final DigitalInput limitswitch = new DigitalInput(1);
-        private double shooterVelocityHigh = ShooterConstants.SHOOTER_VELOCITY_HIGH;
-        private double shooterVelocityLow = ShooterConstants.SHOOTER_VELOCITY_LOW;
-        public Shooter(){
-            super();
-            configureShooter();
-            // SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
-            // SmartDashboard.putBoolean("Shooter Velocity Change", false);
+
+    private final SparkMax shooter = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
+    public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
+    private double shooterVelocityHigh = ShooterConstants.SHOOTER_VELOCITY_HIGH;
+    private double shooterVelocityLow = ShooterConstants.SHOOTER_VELOCITY_LOW;
+    public Shooter(){
+        super();
+        configureShooter();
+        // SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
+        // SmartDashboard.putBoolean("Shooter Velocity Change", false);
 
     }
+
     public void configureShooter(){
         shooterConfig.inverted(ShooterConstants.SHOOTER_INVERTED);
         shooterConfig.smartCurrentLimit(ShooterConstants.SHOOTER_STALL_LIMIT,ShooterConstants.SHOOTER_FREE_LIMIT);//maybe 
@@ -41,10 +42,10 @@ public class Shooter extends SubsystemBase{
         shooter.set(shooterVelocityHigh);
     }    
 
-
     public void shootLow(){
         shooter.set(shooterVelocityLow);
     }
+
     public void stop(){
         shooter.set(0);
     }
@@ -55,15 +56,6 @@ public class Shooter extends SubsystemBase{
     //         shooterVelocity = SmartDashboard.getNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
     //     }
     //     SmartDashboard.putBoolean("Shooter Velocity Change", false);
-
-
-
-        // if(!limitswitch.get()){
-        //     shootHigh();
-        // }
-        // else{
-        //     stop();
-        // }
     }
 }
 
