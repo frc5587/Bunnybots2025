@@ -52,7 +52,16 @@ public final class Constants
     public static final boolean SHOOTER_INVERTED = false; //maybe change
     public static final int SHOOTER_STALL_LIMIT = 30; //placeholder
     public static final int SHOOTER_FREE_LIMIT = 35; //placeholder
-    public static final double SHOOTER_VELOCITY_HIGH = 1.0;
-    public static final double SHOOTER_VELOCITY_LOW = 0.4;
+    public static final double SHOOTER_VELOCITY_HIGH = 1.0; // placeholder
+    public static final double SHOOTER_VELOCITY_LOW = 0.4; // placeholder
+  }
+
+  public static class IntakeConstants {
+    public static int INTAKE_ID = 67; //placeholder
+    public static double INTAKE_SPEED = 0.5f; // placeholder
+    public static double LOAD_DISTANCE = 2f; // placeholder
+    public static boolean INTAKE_INVERTED = false; // change later
+    public static int INTAKE_STALL_LIMIT = 1; // placeholder
+    public static int INTAKE_FREE_LIMIT = 5700; // placeholder
   }
 }
