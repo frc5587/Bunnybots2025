@@ -18,10 +18,9 @@ public class Intake extends SubsystemBase {
   public Intake() {
     super();
     intakeConfig.inverted(IntakeConstants.INTAKE_INVERTED);
-    intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_STALL_LIMIT, IntakeConstants.INTAKE_FREE_LIMIT);// maybe
+    intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_STALL_LIMIT, IntakeConstants.INTAKE_FREE_LIMIT); // maybe
     intakeConfig.idleMode(IdleMode.kCoast);
     intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
   }
 
   public void stop() {
@@ -34,9 +33,5 @@ public class Intake extends SubsystemBase {
 
   public double getPosition() {
     return intake.getAbsoluteEncoder().getPosition();
-  }
-
-  @Override
-  public void periodic() {
   }
 }
