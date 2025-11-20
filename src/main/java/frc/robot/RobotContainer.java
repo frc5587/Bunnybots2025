@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.LoadLunites;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -28,6 +30,7 @@ import swervelib.SwerveInputStream;
 public class RobotContainer
 {
   private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
@@ -72,11 +75,11 @@ public class RobotContainer
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Register Named Commands
-    NamedCommands.registerCommand("flywheelHighGoal", null);
-    NamedCommands.registerCommand("flywheelLowGoal", null);
-    NamedCommands.registerCommand("flywheelStop", null);
-    NamedCommands.registerCommand("isFlywheelReady", null);
-    NamedCommands.registerCommand("loadLunite", null);
+    NamedCommands.registerCommand("flywheelHighGoal", Commands.run(shooter::shootHigh, shooter));
+    NamedCommands.registerCommand("flywheelLowGoal", Commands.run(shooter::shootLow, shooter));
+    NamedCommands.registerCommand("flywheelStop", Commands.run(shooter::stop, shooter));
+    NamedCommands.registerCommand("loadLunite", new LoadLunites(intake, 1));
+    NamedCommands.registerCommand("loadLunites", new LoadLunites(intake, 3));
   }
 
   /**
@@ -118,9 +121,13 @@ public class RobotContainer
       // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     }
 
-    driverXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh)).onFalse(Commands.runOnce(shooter::stop)); //high speed shoot
-    driverXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); //low speed shoot
+    // Shooter
+    driverXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh)).onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
+    driverXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
 
+    // Intake
+    driverXbox.leftBumper().onTrue(new LoadLunites(intake, 1)); // Load one lunite
+    driverXbox.leftTrigger().whileTrue(Commands.runOnce(intake::start)).onFalse(Commands.runOnce(intake::stop)); // Spin intake while pressed
   }
 
   /**
