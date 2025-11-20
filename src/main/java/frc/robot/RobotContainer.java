@@ -75,9 +75,9 @@ public class RobotContainer
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Register Named Commands
-    NamedCommands.registerCommand("flywheelHighGoal", Commands.run(shooter::shootHigh, shooter));
-    NamedCommands.registerCommand("flywheelLowGoal", Commands.run(shooter::shootLow, shooter));
-    NamedCommands.registerCommand("flywheelStop", Commands.run(shooter::stop, shooter));
+    NamedCommands.registerCommand("shooterHighGoal", Commands.run(shooter::shootHigh, shooter));
+    NamedCommands.registerCommand("shooterLowGoal", Commands.run(shooter::shootLow, shooter));
+    NamedCommands.registerCommand("shooterStop", Commands.run(shooter::stop, shooter));
     NamedCommands.registerCommand("loadLunite", new LoadLunites(intake, 1));
     NamedCommands.registerCommand("loadLunites", new LoadLunites(intake, 3));
   }

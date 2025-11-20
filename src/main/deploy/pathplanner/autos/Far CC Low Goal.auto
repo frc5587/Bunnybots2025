@@ -7,25 +7,19 @@
         {
           "type": "named",
           "data": {
-            "name": "flywheelLowGoal"
+            "name": "shooterLowGoal"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "loadLunite"
+            "name": "loadLunites"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "loadLunite"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "loadLunite"
+            "name": "shooterStop"
           }
         },
         {
