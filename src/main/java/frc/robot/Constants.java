@@ -32,8 +32,8 @@ public final class Constants
 
   public static final class DrivebaseConstants
   {
-    public static final double WHEEL_LOCK_TIME = 10; // Hold time on motor brakes when disabled in seconds
-    public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+    public static final double WHEEL_LOCK_TIME = 10.0; // Hold time on motor brakes when disabled in seconds
+    public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound //TODO set with correct value
     public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
     public static final double MAX_SPEED  = Units.feetToMeters(14.5); // Maximum speed of the robot in meters per second, used to limit acceleration.
   }
@@ -58,10 +58,11 @@ public final class Constants
 
   public static class IntakeConstants {
     public static int INTAKE_ID = 67; //placeholder
-    public static double INTAKE_SPEED = 0.5f; // placeholder
-    public static double LOAD_DISTANCE = 2f; // placeholder
+    public static double POSITION_CONVERSION_FACTOR = 1.0;
+    public static double INTAKE_SPEED = 0.5; // placeholder
+    public static double LOAD_DISTANCE = 2.0; // placeholder
     public static boolean INTAKE_INVERTED = false; // change later
-    public static int INTAKE_STALL_LIMIT = 1; // placeholder
-    public static int INTAKE_FREE_LIMIT = 5700; // placeholder
+    public static int INTAKE_STALL_LIMIT = 30; // placeholder
+    public static int INTAKE_FREE_LIMIT = 35; // placeholder
   }
 }

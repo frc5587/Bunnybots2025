@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.LoadLunites;
+import frc.robot.commands.LoadLunite;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -36,6 +36,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final SendableChooser<Command> autoChooser;
+  private final LoadLunite loadLunite = new LoadLunite(intake);
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -78,8 +79,7 @@ public class RobotContainer
     NamedCommands.registerCommand("shooterHighGoal", Commands.run(shooter::shootHigh, shooter));
     NamedCommands.registerCommand("shooterLowGoal", Commands.run(shooter::shootLow, shooter));
     NamedCommands.registerCommand("shooterStop", Commands.run(shooter::stop, shooter));
-    NamedCommands.registerCommand("loadLunite", new LoadLunites(intake, 1));
-    NamedCommands.registerCommand("loadLunites", new LoadLunites(intake, 3));
+    NamedCommands.registerCommand("loadLunite", loadLunite);
   }
 
   /**
@@ -126,7 +126,7 @@ public class RobotContainer
     driverXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
 
     // Intake
-    driverXbox.leftBumper().onTrue(new LoadLunites(intake, 1)); // Load one lunite
+    driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
     driverXbox.leftTrigger().whileTrue(Commands.runOnce(intake::start)).onFalse(Commands.runOnce(intake::stop)); // Spin intake while pressed
   }
 

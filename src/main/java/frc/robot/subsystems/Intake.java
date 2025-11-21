@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -17,9 +18,12 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     super();
+    SmartDashboard.putNumber("Intake Position", getPosition());
+
     intakeConfig.inverted(IntakeConstants.INTAKE_INVERTED);
     intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_STALL_LIMIT, IntakeConstants.INTAKE_FREE_LIMIT); // maybe
-    intakeConfig.idleMode(IdleMode.kCoast);
+    intakeConfig.idleMode(IdleMode.kBrake);
+    intakeConfig.encoder.positionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
     intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
@@ -33,5 +37,10 @@ public class Intake extends SubsystemBase {
 
   public double getPosition() {
     return intake.getAbsoluteEncoder().getPosition();
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Intake Position", getPosition());
   }
 }
