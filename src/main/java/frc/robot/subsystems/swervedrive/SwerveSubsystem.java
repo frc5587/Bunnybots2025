@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -17,14 +18,20 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+import com.studica.frc.AHRS;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +40,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.subsystems.swervedrive.Vision.Cameras;
+import limelight.Limelight;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.LimelightPoseEstimator;
+import limelight.networktables.LimelightSettings.LEDMode;
+import limelight.networktables.Orientation3d;
+import limelight.networktables.PoseEstimate;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -42,7 +55,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
-import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -60,15 +72,24 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
+  /*
+   * IMU
+   */
+  AHRS navx;
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean     visionDriveTest = false;
+  private final boolean visionDriveTest = false;
   /**
-   * PhotonVision class to keep an accurate odometry.
+   * Limelight
    */
-  private       Vision      vision;
-
+  //SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  Pose3d cameraOffset = new Pose3d(0,
+                                   0,
+                                   0,
+                                     Rotation3d.kZero);
+  Limelight limelight;
+  LimelightPoseEstimator poseEstimator;
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -104,12 +125,19 @@ public class SwerveSubsystem extends SubsystemBase
     // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
     if (visionDriveTest)
     {
-      setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+
+    // Setup limelight
+    limelight = new Limelight("limelight");
+    limelight.getSettings()
+             .withLimelightLEDMode(LEDMode.PipelineControl)
+             .withCameraOffset(cameraOffset)
+             .save();
+    poseEstimator = limelight.getPoseEstimator(true);
   }
 
   /**
@@ -127,22 +155,45 @@ public class SwerveSubsystem extends SubsystemBase
                                              Rotation2d.fromDegrees(0)));
   }
 
-  /**
-   * Setup the photon vision class.
-   */
-  public void setupPhotonVision()
-  {
-    vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-  }
-
   @Override
   public void periodic()
   {
     // When vision is enabled we must manually update odometry in SwerveDrive
     if (visionDriveTest)
     {
+      // Required for megatag2
+      limelight.getSettings()
+          .withRobotOrientation(new Orientation3d(navx.getRotation3d(),
+                                new AngularVelocity3d(DegreesPerSecond.of(0),
+                                                      DegreesPerSecond.of(0),
+                                                      DegreesPerSecond.of(0))))
+          .save();
+
+      // Get the vision estimate.
+      Optional<PoseEstimate> visionEstimate = poseEstimator.getPoseEstimate(); // BotPose.BLUE_MEGATAG2.get(limelight);
+      visionEstimate.ifPresent((PoseEstimate poseEstimate) -> {
+        // If the average tag distance is less than 4 meters,
+        // there are more than 0 tags in view,
+        // and the average ambiguity between tags is less than 30% then we update the
+        // pose estimation.
+        if (poseEstimate.avgTagDist < 4 && poseEstimate.tagCount > 0 && poseEstimate.getMinTagAmbiguity() < 0.3) {
+          swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(),
+                                           poseEstimate.timestampSeconds);
+        }
+      });
+
+      // limelight.getLatestResults().ifPresent((LimelightResults result) -> {
+      //   for (NeuralClassifier object : result.targets_Classifier) {
+      //     // Classifier says its a note.
+      //     if (object.className.equals("algae")) {
+      //       if (object.ty > 2 && object.ty < 1) {
+      //         // do stuff
+      //       }
+      //     }
+      //   }
+      // });
+
       swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
     }
   }
 
@@ -223,26 +274,15 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   /**
-   * Aim the robot at the target returned by PhotonVision.
+   * Aim the robot at the target
    *
    * @return A {@link Command} which will run the alignment.
    */
-  public Command aimAtTarget(Cameras camera)
+  public Command aimAtTarget()
   {
 
     return run(() -> {
-      Optional<PhotonPipelineResult> resultO = camera.getBestResult();
-      if (resultO.isPresent())
-      {
-        var result = resultO.get();
-        if (result.hasTargets())
-        {
-          drive(getTargetSpeeds(0,
-                                0,
-                                Rotation2d.fromDegrees(result.getBestTarget()
-                                                             .getYaw()))); // Not sure if this will work, more math may be required.
-        }
-      }
+      
     });
   }
 
