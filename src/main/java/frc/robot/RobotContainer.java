@@ -131,7 +131,7 @@ public class RobotContainer
     // Press once
     driverXbox.rightBumper().onTrue(Commands.parallel(Commands.runOnce(shooter::shootHigh), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_RED)))); // High speed shoot
     driverXbox.rightTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::shootLow), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_BLUE)))); // Low speed shoot
-    driverXbox.leftTrigger().onTrue(Commands.runOnce(shooter::stop));
+    driverXbox.leftTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::stop), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.OFF))));
 
     // Intake
     driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
