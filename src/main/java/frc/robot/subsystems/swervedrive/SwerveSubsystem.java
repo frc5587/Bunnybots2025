@@ -85,9 +85,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
   //SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   Pose3d cameraOffset = new Pose3d(0,
-                                   0,
-                                   0,
-                                     Rotation3d.kZero);
+                                   0.23,
+                                   0.095,
+                                     new Rotation3d(0.0, Units.degreesToRadians(30), 0.0));
   Limelight limelight;
   LimelightPoseEstimator poseEstimator;
   /**

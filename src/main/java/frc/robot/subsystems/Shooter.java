@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase{
     }
 
     public void stop(){
-        shooter.set(0);
+        shooter.set(0); //TODO switch to setvoltage
     }
 
     @Override

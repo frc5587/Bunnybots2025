@@ -21,6 +21,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
+import frc.robot.subsystems.LEDController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -37,6 +38,7 @@ public class RobotContainer
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final SendableChooser<Command> autoChooser;
   private final LoadLunite loadLunite = new LoadLunite(intake);
+  private final LEDController ledController = new LEDController();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -122,8 +124,14 @@ public class RobotContainer
     }
 
     // Shooter
-    driverXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh)).onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
-    driverXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
+
+    // Hold
+    // driverXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh)).onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
+    // driverXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
+    // Press once
+    driverXbox.rightBumper().onTrue(Commands.parallel(Commands.runOnce(shooter::shootHigh), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_RED)))); // High speed shoot
+    driverXbox.rightTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::shootLow), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_BLUE)))); // Low speed shoot
+    driverXbox.leftTrigger().onTrue(Commands.runOnce(shooter::stop));
 
     // Intake
     driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
