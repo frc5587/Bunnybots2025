@@ -66,4 +66,10 @@ public final class Constants
     public static int MIDSTAGE_STALL_LIMIT = 30; // placeholder
     public static int MIDSTAGE_FREE_LIMIT = 35; // placeholder
   }
+
+  public static class LEDConstants {
+    public static int kPwmPort = 9; // PWM port for the LED strip
+    public static int kLedLength = 300; // Number of LEDs in the strip
+    public static double kBrightness = 1; // 100% brightness
+  }
 }

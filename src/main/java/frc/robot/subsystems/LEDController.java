@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.Constants.LEDConstants;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
@@ -8,17 +9,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 /**
- * Notes - adjust kBrightness to limit current draw
+ * Notes - adjust LEDConstants.kBrightness to limit current draw
  * Correspondigly keep brightness brightness in the range of 0.1-0.2
  * Color can be changed to custom parameteres via standard RGB scale
  */
 
 public class LEDController extends SubsystemBase {
-  // Constants that can move to Constant.java
-  private static final int kPwmPort = 9; // PWM port for the LED strip
-  private static final int kLedLength = 300; // Number of LEDs in the strip
-  private static final double kBrightness = 1; // 100% brightness
-
   // Progress fill animation
   private static final double kFillDurationSeconds = 0.5; // Duration of the fill animation
   private double m_progress = 0.0;
@@ -70,10 +66,10 @@ public class LEDController extends SubsystemBase {
   /** Called once at the beginning of the robot program. */
   public LEDController() {
     // PWM port must be a PWM header, not MXP or DIO
-    m_led = new AddressableLED(kPwmPort);
+    m_led = new AddressableLED(LEDConstants.kPwmPort);
 
     // Set the strip length once, then update data as needed
-    m_ledBuffer = new AddressableLEDBuffer(kLedLength);
+    m_ledBuffer = new AddressableLEDBuffer(LEDConstants.kLedLength);
     m_led.setLength(m_ledBuffer.getLength());
 
     // Set the data
@@ -124,9 +120,9 @@ public class LEDController extends SubsystemBase {
     int litLeds = (int) Math.ceil(m_progress * m_ledBuffer.getLength());
     litLeds = Math.max(0, Math.min(litLeds, m_ledBuffer.getLength()));
 
-    r = (int) (r * kBrightness);
-    g = (int) (g * kBrightness);
-    b = (int) (b * kBrightness);
+    r = (int) (r * LEDConstants.kBrightness);
+    g = (int) (g * LEDConstants.kBrightness);
+    b = (int) (b * LEDConstants.kBrightness);
     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
       if (i < litLeds) {
         m_ledBuffer.setRGB(i, r, g, b);
@@ -144,7 +140,7 @@ public class LEDController extends SubsystemBase {
   // Overload for applyColorSolid to accept LEDColor enum
   // - LEDController.applyColorSolid(LEDColor.TR_RED) will set the whole strip red
   public void applyColorSolid(LEDColor color) {
-    applyColorSolid(color.r, color.g, color.b, kLedLength);
+    applyColorSolid(color.r, color.g, color.b, LEDConstants.kLedLength);
   }
 
   /**
@@ -153,13 +149,13 @@ public class LEDController extends SubsystemBase {
    * 
    * @param r          Red component (0-255), g Green component (0-255), b Blue
    *                   component (0-255)
-   * @param kLedLength Number of LEDs in the strip
+   * @param LEDConstants.kLedLength Number of LEDs in the strip
    */
   private void applyColorSolid(int r, int g, int b, int kLedLength) {
-    r = (int) (r * kBrightness);
-    g = (int) (g * kBrightness);
-    b = (int) (b * kBrightness); // keep brightness param low (.1-.2) to avoid current draw
-    for (int i = 0; i < kLedLength; i++) {
+    r = (int) (r * LEDConstants.kBrightness);
+    g = (int) (g * LEDConstants.kBrightness);
+    b = (int) (b * LEDConstants.kBrightness); // keep brightness param low (.1-.2) to avoid current draw
+    for (int i = 0; i < LEDConstants.kLedLength; i++) {
       m_ledBuffer.setRGB(i, r, g, b); // instantaneous blue at reduced brightness
     }
   }
@@ -227,9 +223,9 @@ public class LEDController extends SubsystemBase {
     }
     boolean on = ((int) (t / 0.5)) % 2 == 0; // 0.5s on, 0.5s off
     if (on) {
-      applyColorSolid(blinkColorR, blinkColorG, blinkColorB, kLedLength);
+      applyColorSolid(blinkColorR, blinkColorG, blinkColorB, LEDConstants.kLedLength);
     } else {
-      applyColorSolid(blinkColorR2, blinkColorG2, blinkColorB2, kLedLength);
+      applyColorSolid(blinkColorR2, blinkColorG2, blinkColorB2, LEDConstants.kLedLength);
     }
   }
 
@@ -254,12 +250,12 @@ public class LEDController extends SubsystemBase {
    * @param loop          If true the segment wraps around when it reaches the end
    */
   public void startSnakeAnimation(int r, int g, int b, int r2, int g2, int b2, double ledsPerSecond, boolean loop) {
-    snakeR = (int) (r * kBrightness);
-    snakeG = (int) (g * kBrightness);
-    snakeB = (int) (b * kBrightness);
-    snakeR2 = (int) (r2 * kBrightness);
-    snakeG2 = (int) (g2 * kBrightness);
-    snakeB2 = (int) (b2 * kBrightness);
+    snakeR = (int) (r * LEDConstants.kBrightness);
+    snakeG = (int) (g * LEDConstants.kBrightness);
+    snakeB = (int) (b * LEDConstants.kBrightness);
+    snakeR2 = (int) (r2 * LEDConstants.kBrightness);
+    snakeG2 = (int) (g2 * LEDConstants.kBrightness);
+    snakeB2 = (int) (b2 * LEDConstants.kBrightness);
     snakeSpeedLedsPerSecond = Math.max(1.0, ledsPerSecond);
     snakeLooping = loop;
     snakeActive = true;
