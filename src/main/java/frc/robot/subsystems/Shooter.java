@@ -14,7 +14,7 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase{
 
-    private final SparkMax shooter = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
+    private final SparkMax motor = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
     public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
     private double shooterVelocityHigh = ShooterConstants.SHOOTER_VELOCITY_HIGH;
     private double shooterVelocityLow = ShooterConstants.SHOOTER_VELOCITY_LOW;
@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase{
         shooterConfig.inverted(ShooterConstants.SHOOTER_INVERTED);
         shooterConfig.smartCurrentLimit(ShooterConstants.SHOOTER_STALL_LIMIT,ShooterConstants.SHOOTER_FREE_LIMIT);//maybe 
         shooterConfig.idleMode(IdleMode.kCoast);
-        shooter.configure(shooterConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        motor.configure(shooterConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
     }  
 
     // public double getShuffleboardShooterVelocity(){
@@ -39,15 +39,20 @@ public class Shooter extends SubsystemBase{
     // }
 
     public void shootHigh(){
-        shooter.set(shooterVelocityHigh);
+        motor.set(shooterVelocityHigh);
     }    
 
     public void shootLow(){
-        shooter.set(shooterVelocityLow);
+        motor.set(shooterVelocityLow);
     }
 
     public void stop(){
-        shooter.set(0); //TODO switch to setvoltage
+        motor.set(0); //TODO switch to setvoltage
+    }
+
+    public boolean isReady() {
+        double speedDifference = ((motor.get() * ShooterConstants.SHOOTER_MAX_VELOCITY_RPM) - motor.getAbsoluteEncoder().getVelocity()) / ShooterConstants.SHOOTER_MAX_VELOCITY_RPM;
+        return speedDifference < 0.05;
     }
 
     @Override

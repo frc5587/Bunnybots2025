@@ -17,7 +17,7 @@ public class LEDController extends SubsystemBase {
   // Constants that can move to Constant.java
   private static final int kPwmPort = 9; // PWM port for the LED strip
   private static final int kLedLength = 300; // Number of LEDs in the strip
-  private static final double kBrightness = 0.1; // 10% brightness
+  private static final double kBrightness = 1; // 100% brightness
 
   // Progress fill animation
   private static final double kFillDurationSeconds = 0.5; // Duration of the fill animation

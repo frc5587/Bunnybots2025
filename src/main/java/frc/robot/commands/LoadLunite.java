@@ -1,31 +1,47 @@
 package frc.robot.commands;
 
+import java.nio.file.WatchEvent;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Intake;
+import frc.robot.Constants.MidstageConstants;
+import frc.robot.subsystems.Midstage;
 
 public class LoadLunite extends Command {
-  public final Intake intake;
+  private final Midstage midstage;
+  private final BooleanSupplier shooterReady;
 
   private double startPosition = 0;
 
-  public LoadLunite (Intake intakeInput) {
-    intake = intakeInput;
+  public LoadLunite (Midstage midstageInput) {
+    midstage = midstageInput;
+    shooterReady = () -> true;
+  }
+
+  public LoadLunite(Midstage midstageInput, BooleanSupplier isReadySupplier) {
+    midstage = midstageInput;
+    shooterReady = isReadySupplier;
   }
 
   @Override
   public void initialize() {
-    intake.start();
-    startPosition = intake.getPosition();
+    startPosition = midstage.getPosition();
+  }
+
+  @Override
+  public void execute() {
+    if (!shooterReady.getAsBoolean()) {
+      midstage.start();
+    }
   }
 
   @Override
   public boolean isFinished() {
-    return startPosition - intake.getPosition() < IntakeConstants.LOAD_DISTANCE;
+    return !midstage.hasLunite();
   }
 
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    midstage.stop();
   }
 }

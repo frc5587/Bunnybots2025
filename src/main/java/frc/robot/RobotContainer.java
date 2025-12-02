@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.LoadLunite;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Midstage;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -31,13 +31,13 @@ import frc.robot.subsystems.LEDController;
 public class RobotContainer
 {
   private final Shooter shooter = new Shooter();
-  private final Intake intake = new Intake();
+  private final Midstage intake = new Midstage();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final SendableChooser<Command> autoChooser;
-  private final LoadLunite loadLunite = new LoadLunite(intake);
+  private final LoadLunite loadLunite = new LoadLunite(intake, () -> shooter.isReady());
   private final LEDController ledController = new LEDController();
 
   /**
