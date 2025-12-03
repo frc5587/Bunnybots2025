@@ -54,7 +54,7 @@ public final class Constants
     public static final int SHOOTER_FREE_LIMIT = 35; //placeholder
     public static final double SHOOTER_MAX_VELOCITY_RPM = 5676;
     public static final double SHOOTER_VELOCITY_HIGH = 1.0; // placeholder
-    public static final double SHOOTER_VELOCITY_LOW = 0.4; // placeholder
+    public static final double SHOOTER_VELOCITY_LOW = 0.5; // placeholder
   }
 
   public static class MidstageConstants {

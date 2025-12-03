@@ -31,13 +31,14 @@ import frc.robot.subsystems.LEDController;
 public class RobotContainer
 {
   private final Shooter shooter = new Shooter();
-  private final Midstage intake = new Midstage();
+  private final Midstage midstage = new Midstage();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
+  final         CommandXboxController operatorXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final SendableChooser<Command> autoChooser;
-  private final LoadLunite loadLunite = new LoadLunite(intake, () -> shooter.isReady());
+  private final LoadLunite loadLunite = new LoadLunite(midstage, () -> shooter.isReady());
   private final LEDController ledController = new LEDController();
 
   /**
@@ -129,13 +130,14 @@ public class RobotContainer
     // driverXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh)).onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
     // driverXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
     // Press once
-    driverXbox.rightBumper().onTrue(Commands.parallel(Commands.runOnce(shooter::shootHigh), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_RED)))); // High speed shoot
-    driverXbox.rightTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::shootLow), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_BLUE)))); // Low speed shoot
-    driverXbox.leftTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::stop), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.OFF))));
+    operatorXbox.rightBumper().onTrue(Commands.parallel(Commands.runOnce(shooter::shootHigh), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_RED)))); // High speed shoot
+    operatorXbox.rightTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::shootLow), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_BLUE)))); // Low speed shoot
+    operatorXbox.x().onTrue(Commands.parallel(Commands.runOnce(shooter::stop), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.OFF))));
+    operatorXbox.b().onTrue(Commands.parallel(Commands.runOnce(shooter::stop), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.OFF))));
 
-    // Intake
-    driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
-    driverXbox.leftTrigger().whileTrue(Commands.runOnce(intake::start)).onFalse(Commands.runOnce(intake::stop)); // Spin intake while pressed
+    // Midstage
+    // driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
+    operatorXbox.leftBumper().whileTrue(Commands.runOnce(midstage::start)).onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
   }
 
   /**

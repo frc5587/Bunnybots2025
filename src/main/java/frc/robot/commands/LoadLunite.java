@@ -37,7 +37,7 @@ public class LoadLunite extends Command {
 
   @Override
   public boolean isFinished() {
-    return !midstage.hasLunite();
+    return true;
   }
 
   @Override

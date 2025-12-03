@@ -15,7 +15,7 @@ import frc.robot.Constants.MidstageConstants;
 public class Midstage extends SubsystemBase {
 
   private final SparkMax motor = new SparkMax(MidstageConstants.MIDSTAGE_ID, MotorType.kBrushless);
-  private final DigitalInput beamBreak = new DigitalInput(MidstageConstants.BEAMBREAK_ID);
+  // private final DigitalInput beamBreak = new DigitalInput(MidstageConstants.BEAMBREAK_ID);
   public static SparkMaxConfig midstageConfig = new SparkMaxConfig();
 
   public Midstage() {
@@ -46,7 +46,7 @@ public class Midstage extends SubsystemBase {
     SmartDashboard.putNumber("Midstage Position", getPosition());
   }
 
-  public boolean hasLunite() {
-    return !beamBreak.get();
-  }
+  // public boolean hasLunite() {
+  //   return !beamBreak.get();
+  // }
 }
