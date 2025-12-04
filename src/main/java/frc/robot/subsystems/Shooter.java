@@ -16,8 +16,8 @@ public class Shooter extends SubsystemBase{
 
     private final SparkMax motor = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
     public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
-    private double shooterVelocityHigh = ShooterConstants.SHOOTER_VELOCITY_HIGH;
-    private double shooterVelocityLow = ShooterConstants.SHOOTER_VELOCITY_LOW;
+    private double shooterVelocityHigh = ShooterConstants.SHOOTER_SPEED_HIGH;
+    private double shooterVelocityLow = ShooterConstants.SHOOTER_SPEED_LOW;
     public Shooter(){
         super();
         configureShooter();
@@ -51,7 +51,7 @@ public class Shooter extends SubsystemBase{
     }
 
     public void reverse() {
-        motor.set(ShooterConstants.SHOOTER_VELOCITY_REVERSE);
+        motor.set(ShooterConstants.SHOOTER_SPEED_REVERSE);
     }
 
     public boolean isReady() {
