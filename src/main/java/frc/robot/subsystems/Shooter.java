@@ -50,6 +50,10 @@ public class Shooter extends SubsystemBase{
         motor.set(0); //TODO switch to setvoltage
     }
 
+    public void reverse() {
+        motor.set(ShooterConstants.SHOOTER_VELOCITY_REVERSE);
+    }
+
     public boolean isReady() {
         double speedDifference = ((motor.get() * ShooterConstants.SHOOTER_MAX_VELOCITY_RPM) - motor.getAbsoluteEncoder().getVelocity()) / ShooterConstants.SHOOTER_MAX_VELOCITY_RPM;
         return speedDifference < 0.05;

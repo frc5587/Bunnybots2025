@@ -33,7 +33,7 @@ public final class Constants
   public static final class DrivebaseConstants
   {
     public static final double WHEEL_LOCK_TIME = 10.0; // Hold time on motor brakes when disabled in seconds
-    public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound //TODO set with correct value
+    public static final double ROBOT_MASS = (79) * 0.453592; // 32lbs * kg per pound //TODO set WITH BUMPERS (current is w/o bumpers)
     public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
     public static final double MAX_SPEED  = Units.feetToMeters(14.5); // Maximum speed of the robot in meters per second, used to limit acceleration.
   }
@@ -48,23 +48,25 @@ public final class Constants
   }
 
   public static class ShooterConstants{
-    public static final int SHOOTER_ID= 20; //placeholder
-    public static final boolean SHOOTER_INVERTED = false; //maybe change
-    public static final int SHOOTER_STALL_LIMIT = 30; //placeholder
-    public static final int SHOOTER_FREE_LIMIT = 35; //placeholder
+    public static final int SHOOTER_ID= 30; 
+    public static final boolean SHOOTER_INVERTED = true;
+    public static final int SHOOTER_STALL_LIMIT = 75; 
+    public static final int SHOOTER_FREE_LIMIT = 80; 
     public static final double SHOOTER_MAX_VELOCITY_RPM = 5676;
-    public static final double SHOOTER_VELOCITY_HIGH = 1.0; // placeholder
-    public static final double SHOOTER_VELOCITY_LOW = 0.5; // placeholder
+    public static final double SHOOTER_VELOCITY_HIGH = 1.0;
+    public static final double SHOOTER_VELOCITY_LOW = 0.5;
+    public static final double SHOOTER_VELOCITY_REVERSE = -0.2;
   }
 
   public static class MidstageConstants {
-    public static int MIDSTAGE_ID = 30; //placeholder
+    public static int MIDSTAGE_ID = 20; 
     public static int BEAMBREAK_ID = 0;
     public static double POSITION_CONVERSION_FACTOR = 1.0;
     public static double MIDSTAGE_SPEED = 0.5; // placeholder
-    public static boolean MIDSTAGE_INVERTED = false; // change later
-    public static int MIDSTAGE_STALL_LIMIT = 30; // placeholder
-    public static int MIDSTAGE_FREE_LIMIT = 35; // placeholder
+    public static double MIDSTAGE_REVERSE_SPEED = -0.3;
+    public static boolean MIDSTAGE_INVERTED = true; 
+    public static int MIDSTAGE_STALL_LIMIT = 75;
+    public static int MIDSTAGE_FREE_LIMIT = 80;
   }
 
   public static class LEDConstants {

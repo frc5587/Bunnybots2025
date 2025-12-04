@@ -34,6 +34,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -127,17 +129,17 @@ public class SwerveSubsystem extends SubsystemBase
     {
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
+      // Setup limelight
+      limelight = new Limelight("limelight");
+      limelight.getSettings()
+               .withLimelightLEDMode(LEDMode.PipelineControl)
+               .withCameraOffset(cameraOffset)
+               .save();
+      poseEstimator = limelight.getPoseEstimator(true);
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
 
-    // Setup limelight
-    limelight = new Limelight("limelight");
-    limelight.getSettings()
-             .withLimelightLEDMode(LEDMode.PipelineControl)
-             .withCameraOffset(cameraOffset)
-             .save();
-    poseEstimator = limelight.getPoseEstimator(true);
   }
 
   /**
@@ -194,6 +196,8 @@ public class SwerveSubsystem extends SubsystemBase
       // });
 
       swerveDrive.updateOdometry();
+
+      // swerveDrive.field.setRobotPose(getPose());
     }
   }
 
