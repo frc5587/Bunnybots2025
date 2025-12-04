@@ -49,24 +49,24 @@ public final class Constants
 
   public static class ShooterConstants{
     public static final int SHOOTER_ID= 30; 
-    public static final boolean SHOOTER_INVERTED = true;
-    public static final int SHOOTER_STALL_LIMIT = 75; 
-    public static final int SHOOTER_FREE_LIMIT = 80; 
-    public static final double SHOOTER_MAX_VELOCITY_RPM = 5676;
     public static final double SHOOTER_SPEED_HIGH = 1.0;
     public static final double SHOOTER_SPEED_LOW = 0.5;
     public static final double SHOOTER_SPEED_REVERSE = 0.2;
+    public static final double SPINUP_WAIT_TIME = 0.2;
+    public static final boolean SHOOTER_INVERTED = true;
+    public static final int SHOOTER_STALL_LIMIT = 75;
+    public static final int SHOOTER_FREE_LIMIT = 80;
   }
 
   public static class MidstageConstants {
     public static int MIDSTAGE_ID = 20; 
-    public static int BEAMBREAK_ID = 0;
-    public static double POSITION_CONVERSION_FACTOR = 1.0;
     public static double MIDSTAGE_SPEED = 0.5; // placeholder
     public static double MIDSTAGE_REVERSE_SPEED = 0.3;
+    public static double LOAD_TIME = 2;
     public static boolean MIDSTAGE_INVERTED = true; 
     public static int MIDSTAGE_STALL_LIMIT = 75;
     public static int MIDSTAGE_FREE_LIMIT = 80;
+    public static double POSITION_CONVERSION_FACTOR = 1.0;
   }
 
   public static class LEDConstants {

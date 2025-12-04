@@ -54,11 +54,6 @@ public class Shooter extends SubsystemBase{
         motor.set(ShooterConstants.SHOOTER_SPEED_REVERSE);
     }
 
-    public boolean isReady() {
-        double speedDifference = ((motor.get() * ShooterConstants.SHOOTER_MAX_VELOCITY_RPM) - motor.getAbsoluteEncoder().getVelocity()) / ShooterConstants.SHOOTER_MAX_VELOCITY_RPM;
-        return speedDifference < 0.05;
-    }
-
     @Override
      public void periodic(){     //for testing
     //     if(SmartDashboard.getBoolean("Shooter Velocity Change", false)){

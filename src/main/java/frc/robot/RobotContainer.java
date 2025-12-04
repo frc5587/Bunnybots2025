@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.MidstageConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.LoadLunite;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Midstage;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -37,7 +38,6 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final SendableChooser<Command> autoChooser;
-  private final LoadLunite loadLunite = new LoadLunite(midstage, () -> shooter.isReady());
   // private final LEDController ledController = new LEDController();
 
   /**
@@ -78,10 +78,13 @@ public class RobotContainer
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Register Named Commands
-    NamedCommands.registerCommand("shooterHighGoal", Commands.run(shooter::shootHigh, shooter));
+    NamedCommands.registerCommand("shooterHighGoal", Commands.parallel(Commands.run(shooter::shootHigh, shooter),
+                                                                            Commands.waitSeconds(ShooterConstants.SPINUP_WAIT_TIME)));
     NamedCommands.registerCommand("shooterLowGoal", Commands.run(shooter::shootLow, shooter));
     NamedCommands.registerCommand("shooterStop", Commands.run(shooter::stop, shooter));
-    NamedCommands.registerCommand("loadLunite", loadLunite);
+    NamedCommands.registerCommand("loadLunites", Commands.parallel(Commands.run(midstage::start),
+                                                                        (Commands.waitSeconds(MidstageConstants.LOAD_TIME)))
+                                                                        .andThen(Commands.run(midstage::stop)));
   }
 
   /**
@@ -124,13 +127,15 @@ public class RobotContainer
     }
 
     // Reverse
-    operatorXbox.a().whileTrue(Commands.runOnce(shooter::reverse)).onFalse(Commands.runOnce(shooter::stop));
-    operatorXbox.a().whileTrue(Commands.runOnce(midstage::reverse)).onFalse(Commands.runOnce(midstage::stop));
+    operatorXbox.a().whileTrue(Commands.runOnce(shooter::reverse).alongWith(Commands.runOnce(midstage::reverse)))
+                    .onFalse(Commands.runOnce(shooter::stop).alongWith(Commands.runOnce(midstage::stop)));
 
     // Shooter
     // Hold
-    operatorXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh)).onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
-    operatorXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow)).onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
+    operatorXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh))
+                              .onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
+    operatorXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow))
+                               .onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
     // Press once
     // operatorXbox.rightBumper().onTrue(Commands.parallel(Commands.runOnce(shooter::shootHigh), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_RED)))); // High speed shoot
     // operatorXbox.rightTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::shootLow), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_BLUE)))); // Low speed shoot
@@ -139,7 +144,8 @@ public class RobotContainer
 
     // Midstage
     // driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
-    operatorXbox.leftBumper().whileTrue(Commands.runOnce(midstage::start)).onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
+    operatorXbox.leftBumper().whileTrue(Commands.runOnce(midstage::start))
+                             .onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
   }
 
   /**
