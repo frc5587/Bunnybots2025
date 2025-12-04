@@ -16,17 +16,17 @@ public class Midstage extends SubsystemBase {
 
   private final SparkMax motor = new SparkMax(MidstageConstants.MIDSTAGE_ID, MotorType.kBrushless);
   // private final DigitalInput beamBreak = new DigitalInput(MidstageConstants.BEAMBREAK_ID);
-  public static SparkMaxConfig midstageConfig = new SparkMaxConfig();
+  public static SparkMaxConfig motorConfig = new SparkMaxConfig();
 
   public Midstage() {
     super();
     SmartDashboard.putNumber("Midstage Position", getPosition());
 
-    midstageConfig.inverted(MidstageConstants.MIDSTAGE_INVERTED);
-    midstageConfig.smartCurrentLimit(MidstageConstants.MIDSTAGE_STALL_LIMIT, MidstageConstants.MIDSTAGE_FREE_LIMIT); // maybe
-    midstageConfig.idleMode(IdleMode.kBrake);
-    midstageConfig.encoder.positionConversionFactor(MidstageConstants.POSITION_CONVERSION_FACTOR);
-    motor.configure(midstageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motorConfig.inverted(MidstageConstants.MIDSTAGE_INVERTED);
+    motorConfig.smartCurrentLimit(MidstageConstants.MIDSTAGE_STALL_LIMIT, MidstageConstants.MIDSTAGE_FREE_LIMIT); // maybe
+    motorConfig.idleMode(IdleMode.kBrake);
+    motorConfig.encoder.positionConversionFactor(MidstageConstants.POSITION_CONVERSION_FACTOR);
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void stop() {
