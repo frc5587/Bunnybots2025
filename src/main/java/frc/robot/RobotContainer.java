@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,7 +38,7 @@ public class RobotContainer
   final         CommandXboxController operatorXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
   // private final LEDController ledController = new LEDController();
 
   /**
@@ -79,13 +80,16 @@ public class RobotContainer
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Register Named Commands
-    NamedCommands.registerCommand("shooterHighGoal", Commands.parallel(Commands.run(shooter::shootHigh, shooter),
+    NamedCommands.registerCommand("shooterHighGoal", Commands.parallel(Commands.runOnce(shooter::shootHigh, shooter),
                                                                             Commands.waitSeconds(ShooterConstants.SPINUP_WAIT_TIME)));
-    NamedCommands.registerCommand("shooterLowGoal", Commands.run(shooter::shootLow, shooter));
-    NamedCommands.registerCommand("shooterStop", Commands.run(shooter::stop, shooter));
-    NamedCommands.registerCommand("loadLunites", Commands.parallel(Commands.run(midstage::start),
+    NamedCommands.registerCommand("shooterLowGoal", Commands.runOnce(shooter::shootLow, shooter));
+    NamedCommands.registerCommand("shooterStop", Commands.runOnce(shooter::stop, shooter));
+    NamedCommands.registerCommand("loadLunites", Commands.parallel(Commands.runOnce(midstage::start),
                                                                         (Commands.waitSeconds(MidstageConstants.LOAD_TIME)))
-                                                                        .andThen(Commands.run(midstage::stop)));
+                                                                        .andThen(Commands.runOnce(midstage::stop)));
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
   }
 
   /**

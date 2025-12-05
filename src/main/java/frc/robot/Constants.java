@@ -52,7 +52,7 @@ public final class Constants
     public static final double SHOOTER_SPEED_HIGH = 1.0;
     public static final double SHOOTER_SPEED_LOW = 0.5;
     public static final double SHOOTER_SPEED_REVERSE = 0.2;
-    public static final double SPINUP_WAIT_TIME = 0.2;
+    public static final double SPINUP_WAIT_TIME = 1;
     public static final boolean SHOOTER_INVERTED = true;
     public static final int SHOOTER_STALL_LIMIT = 75;
     public static final int SHOOTER_FREE_LIMIT = 80;
