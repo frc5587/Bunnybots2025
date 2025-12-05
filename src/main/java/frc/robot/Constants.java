@@ -62,7 +62,7 @@ public final class Constants
     public static int MIDSTAGE_ID = 20; 
     public static double MIDSTAGE_SPEED = 0.5; // placeholder
     public static double MIDSTAGE_REVERSE_SPEED = 0.3;
-    public static double LOAD_TIME = 2;
+    public static double LOAD_TIME = 5;
     public static boolean MIDSTAGE_INVERTED = true; 
     public static int MIDSTAGE_STALL_LIMIT = 75;
     public static int MIDSTAGE_FREE_LIMIT = 80;

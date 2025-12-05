@@ -86,8 +86,8 @@ public class SwerveSubsystem extends SubsystemBase
    * Limelight
    */
   //SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-  Pose3d cameraOffset = new Pose3d(0,
-                                   0.23,
+  Pose3d cameraOffset = new Pose3d(0.0127,
+                                   0.254,
                                    0.095,
                                      new Rotation3d(0.0, Units.degreesToRadians(30), 0.0));
   Limelight limelight;
@@ -185,20 +185,7 @@ public class SwerveSubsystem extends SubsystemBase
         }
       });
 
-      // limelight.getLatestResults().ifPresent((LimelightResults result) -> {
-      //   for (NeuralClassifier object : result.targets_Classifier) {
-      //     // Classifier says its a note.
-      //     if (object.className.equals("algae")) {
-      //       if (object.ty > 2 && object.ty < 1) {
-      //         // do stuff
-      //       }
-      //     }
-      //   }
-      // });
-
       swerveDrive.updateOdometry();
-
-      // swerveDrive.field.setRobotPose(getPose());
     }
   }
 
