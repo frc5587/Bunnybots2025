@@ -38,7 +38,7 @@ public class Midstage extends SubsystemBase {
   }
 
   public void reverse() {
-    motor.set(MidstageConstants.MIDSTAGE_REVERSE_SPEED);
+    motor.set(-1*MidstageConstants.MIDSTAGE_REVERSE_SPEED);
   }
 
   public double getPosition() {

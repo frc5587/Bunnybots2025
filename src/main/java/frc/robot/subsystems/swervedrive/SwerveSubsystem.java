@@ -139,6 +139,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+    resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(0)));
 
   }
 

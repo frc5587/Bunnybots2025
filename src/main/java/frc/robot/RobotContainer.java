@@ -43,24 +43,25 @@ public class RobotContainer
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+  SwerveInputStream driveFieldOriented = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                 () -> driverXbox.getLeftY() * -1,
                                                                 () -> driverXbox.getLeftX() * -1)
                                                             .withControllerRotationAxis(driverXbox::getRightX)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
-                                                            .allianceRelativeControl(true);
+                                                            .allianceRelativeControl(true)
+                                                            .robotRelative(false);
   /**
    * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
    */
-  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+  SwerveInputStream driveRobotOriented = driveFieldOriented.copy().robotRelative(true)
                                                              .allianceRelativeControl(false);
 
   /**
    * Clone's the angular velocity input stream and converts it to a fieldRelative
    * input stream.
    */
-  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
+  SwerveInputStream driveDirectAngle = driveFieldOriented.copy().withControllerHeadingAxis(driverXbox::getRightX,
       driverXbox::getRightY)
       .headingWhile(true);
 
@@ -97,7 +98,7 @@ public class RobotContainer
   private void configureBindings()
   {
     Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveFieldOriented);
     Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
 
     if (RobotBase.isSimulation())
@@ -110,11 +111,10 @@ public class RobotContainer
 
     if (DriverStation.isTest())
     {
-      drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity); // Overrides drive command above!
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
 
       // driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
-      // driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       // driverXbox.back().whileTrue(drivebase.centerModulesCommand());
       // driverXbox.leftBumper().onTrue(Commands.none());
     } else
@@ -125,9 +125,18 @@ public class RobotContainer
       // driverXbox.back().whileTrue(Commands.none());
       // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     }
+    // Stuff
+    driverXbox.b().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+    driverXbox.a().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+
+    // Slow mode
+    driverXbox.leftTrigger().whileTrue(Commands.runEnd(
+        () -> driveFieldOriented.scaleTranslation(.6).scaleRotation(.5), 
+        () -> driveFieldOriented.scaleTranslation(.8).scaleRotation(1.)
+        ));
 
     // Reverse
-    operatorXbox.a().whileTrue(Commands.runOnce(shooter::reverse).alongWith(Commands.runOnce(midstage::reverse)))
+    operatorXbox.leftTrigger().whileTrue(Commands.runOnce(shooter::reverse).alongWith(Commands.runOnce(midstage::reverse)))
                     .onFalse(Commands.runOnce(shooter::stop).alongWith(Commands.runOnce(midstage::stop)));
 
     // Shooter
@@ -137,15 +146,16 @@ public class RobotContainer
     operatorXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow))
                                .onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
     // Press once
-    // operatorXbox.rightBumper().onTrue(Commands.parallel(Commands.runOnce(shooter::shootHigh), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_RED)))); // High speed shoot
-    // operatorXbox.rightTrigger().onTrue(Commands.parallel(Commands.runOnce(shooter::shootLow), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.TR_BLUE)))); // Low speed shoot
-    // operatorXbox.x().onTrue(Commands.parallel(Commands.runOnce(shooter::stop), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.OFF))));
-    // operatorXbox.b().onTrue(Commands.parallel(Commands.runOnce(shooter::stop), Commands.run(() -> ledController.applyColorSolid(LEDController.LEDColor.OFF))));
+    operatorXbox.rightBumper().onTrue(Commands.runOnce(shooter::shootHigh)); // High speed shoot
+    operatorXbox.rightTrigger().onTrue(Commands.runOnce(shooter::shootLow)); // Low speed shoot
+    operatorXbox.x().onTrue(Commands.runOnce(shooter::stop));
+    operatorXbox.b().onTrue(Commands.runOnce(shooter::stop));
 
     // Midstage
-    // driverXbox.leftBumper().onTrue(loadLunite); // Load one lunite
     operatorXbox.leftBumper().whileTrue(Commands.runOnce(midstage::start))
-                             .onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
+        .onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
+        
+
   }
 
   /**

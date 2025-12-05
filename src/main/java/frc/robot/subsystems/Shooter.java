@@ -51,7 +51,7 @@ public class Shooter extends SubsystemBase{
     }
 
     public void reverse() {
-        motor.set(ShooterConstants.SHOOTER_SPEED_REVERSE);
+        motor.set(-1*ShooterConstants.SHOOTER_SPEED_REVERSE);
     }
 
     @Override
