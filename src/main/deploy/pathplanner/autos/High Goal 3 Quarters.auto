@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Backup (3 quarters)"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shooterHighGoal"
@@ -25,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Far CC to SS"
+            "pathName": "3 Quarters to SS"
           }
         }
       ]

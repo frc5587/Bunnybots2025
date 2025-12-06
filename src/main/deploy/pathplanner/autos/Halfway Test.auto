@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterHighGoal"
+            "name": "shooterLowGoal"
           }
         },
         {
@@ -25,7 +25,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Close CC to SS"
+            "pathName": "Back Up (halfway)"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Halfway to SS"
           }
         }
       ]
