@@ -8,7 +8,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,9 +43,14 @@ public class RobotContainer
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
-  SwerveInputStream driveFieldOriented = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverXbox.getLeftY() * -1,
-                                                                () -> driverXbox.getLeftX() * -1)
+  SwerveInputStream fieldOriented = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                                () -> driverXbox.getLeftY() * 1, 
+                                                                /* 
+                                                                TODO this is a sketchy fix to the "front is back" issue, 
+                                                                if we are getting weird problems this may be the culprit
+                                                                -1's were changed to 1's
+                                                                */
+                                                                () -> driverXbox.getLeftX() * 1)
                                                             .withControllerRotationAxis(driverXbox::getRightX)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
@@ -55,14 +59,14 @@ public class RobotContainer
   /**
    * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
    */
-  SwerveInputStream driveRobotOriented = driveFieldOriented.copy().robotRelative(true)
+  SwerveInputStream robotOriented = fieldOriented.copy().robotRelative(true)
                                                              .allianceRelativeControl(false);
 
   /**
    * Clone's the angular velocity input stream and converts it to a fieldRelative
    * input stream.
    */
-  SwerveInputStream driveDirectAngle = driveFieldOriented.copy().withControllerHeadingAxis(driverXbox::getRightX,
+  SwerveInputStream directAngle = fieldOriented.copy().withControllerHeadingAxis(driverXbox::getRightX,
       driverXbox::getRightY)
       .headingWhile(true);
 
@@ -101,43 +105,33 @@ public class RobotContainer
    */
   private void configureBindings()
   {
-    Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveFieldOriented);
-    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    Command driveDirectAngle = drivebase.driveFieldOriented(directAngle);
+    Command driveFieldOriented = drivebase.driveFieldOriented(fieldOriented);
+    Command driveRobotOriented  = drivebase.driveFieldOriented(robotOriented);
 
-    if (RobotBase.isSimulation())
-    {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    } else
-    {
-      drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity); // this is the main drive command
-    }
+      drivebase.setDefaultCommand(driveRobotOriented); // this is the main drive command
 
     if (DriverStation.isTest())
     {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+      drivebase.setDefaultCommand(driveFieldOriented); // Overrides drive command above!
 
       // driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
       // driverXbox.back().whileTrue(drivebase.centerModulesCommand());
       // driverXbox.leftBumper().onTrue(Commands.none());
-    } else
-    {
-      // driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      // driverXbox.start().whileTrue(Commands.none());
-      // driverXbox.back().whileTrue(Commands.none());
-      // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     }
-    // Stuff
+    // Driver extra controls
     driverXbox.b().onTrue((Commands.runOnce(drivebase::zeroGyro)));
     driverXbox.a().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
 
     // Slow mode
     driverXbox.leftTrigger().whileTrue(Commands.runEnd(
-        () -> driveFieldOriented.scaleTranslation(.6).scaleRotation(.5), 
-        () -> driveFieldOriented.scaleTranslation(.8).scaleRotation(1.)
+        () -> fieldOriented.scaleTranslation(.5).scaleRotation(.5), 
+        () -> fieldOriented.scaleTranslation(.8).scaleRotation(1.)
         ));
+    driverXbox.leftTrigger().whileTrue(Commands.runEnd(
+        () -> fieldOriented.scaleTranslation(.5).scaleRotation(.5),
+        () -> fieldOriented.scaleTranslation(.8).scaleRotation(1.)));
 
     // Reverse
     operatorXbox.leftTrigger().whileTrue(Commands.runOnce(shooter::reverse).alongWith(Commands.runOnce(midstage::reverse)))
