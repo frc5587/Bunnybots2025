@@ -44,7 +44,7 @@ public class RotateToHeading extends Command {
   @Override
   public boolean isFinished() {
     Duration timeElapsed = Duration.between(lastInstantOutOfRange, Instant.now());
-    double secondsElapsed = timeElapsed.getSeconds() + (timeElapsed.getNano()/1000000000.0);
+    double secondsElapsed = timeElapsed.toNanos()/1000000000.0;
 
     double currentHeading = swerve.getHeading().getDegrees();
     boolean isInRange = Math.abs(currentHeading - targetHeading) < errorMargin;
