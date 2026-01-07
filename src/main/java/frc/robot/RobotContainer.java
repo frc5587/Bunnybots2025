@@ -37,12 +37,13 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
   private final Midstage midstage = new Midstage();
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  final         CommandXboxController driverXbox = new CommandXboxController(0);
-  final         CommandXboxController operatorXbox = new CommandXboxController(1);
+  private final CommandXboxController driverXbox = new CommandXboxController(0);
+  private final CommandXboxController operatorXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  
   private SendableChooser<Command> autoChooser;
-  // private final LEDController ledController = new LEDController();
+  private boolean maintainHeading = false;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
@@ -106,49 +107,57 @@ public class RobotContainer {
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
-    // Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+    // Swerve
+    Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveFieldOriented);
     Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
-
     if (RobotBase.isSimulation()) {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     } 
+    else if (DriverStation.isTest()) {
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+    }
     else {
       drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity); // this is the main drive command
     }
 
-    if (DriverStation.isTest()) {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
-    }
+    // Rotate 90 degrees, aligning with the field
+    Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeading()) * 90 + 90, 2, 0.5);
+    Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeading()) * 90 - 90, 2, 0.5);
+    Command turnRightAndHold = Commands.runOnce(driveBase::overrideHeading(Math.round(drivebase.getIdealHeading()) * 90 + 90));
+    Command turnLeftAndHold = Commands.runOnce(driveBase::overrideHeading(Math.round(drivebase.getIdealHeading()) * 90 - 90));
+    driverXbox.rightBumper().onTrue(maintainHeading ? turnRightAndHold : turnRight);
+    driverXbox.leftBumper().onTrue(maintainHeading ? turnLeftAndHold : turnLeft);
+
+    // Holds the current heading when maintainHeading is toggled on
+    driverXbox.rightStick().onTrue(Commands.runonce(() -> {
+        maintainHeading = !maintainHeading;
+        if (maintainHeading) {
+          driveBase.overrideHeading(driveBase.getIdealHeading());
+        }
+        else {
+          driveBase.deactivateOverrideHeading();
+        }}));
 
     // Stuff
     driverXbox.b().onTrue((Commands.runOnce(drivebase::zeroGyro)));
     driverXbox.a().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
 
-    // Rotate 90 degrees, aligning with the field
-    driverXbox.rightBumper().onTrue(new RotateToHeading(drivebase, () -> Math.floor(drivebase.getIdealHeading()) * 90 + 90, 2, 0.5));
-    driverXbox.leftBumper().onTrue(new RotateToHeading(drivebase, () -> Math.floor(drivebase.getIdealHeading()) * 90 - 90, 2, 0.5));
-
-    // Rotate 90 degrees, aligning with the field
-    driverXbox.rightTrigger().onTrue(new RotateToHeading(drivebase, () -> drivebase.getIdealHeading() + 90, 2, 0.5));
-    driverXbox.leftTrigger().onTrue(new RotateToHeading(drivebase, () -> drivebase.getIdealHeading() - 90, 2, 0.5));
-
     // Slow mode
     driverXbox.leftTrigger().whileTrue(Commands.runEnd(
         () -> driveFieldOriented.scaleTranslation(.6).scaleRotation(.5), 
-        () -> driveFieldOriented.scaleTranslation(.8).scaleRotation(1.)
-        ));
+        () -> driveFieldOriented.scaleTranslation(.8).scaleRotation(1.)));
 
     // Reverse
     operatorXbox.leftTrigger().whileTrue(Commands.runOnce(shooter::reverse).alongWith(Commands.runOnce(midstage::reverse)))
-                    .onFalse(Commands.runOnce(shooter::stop).alongWith(Commands.runOnce(midstage::stop)));
+                              .onFalse(Commands.runOnce(shooter::stop).alongWith(Commands.runOnce(midstage::stop)));
 
     // Shooter hold
     operatorXbox.rightBumper().whileTrue(Commands.runOnce(shooter::shootHigh))
                               .onFalse(Commands.runOnce(shooter::stop)); // High speed shoot
     operatorXbox.rightTrigger().whileTrue(Commands.runOnce(shooter::shootLow))
                                .onFalse(Commands.runOnce(shooter::stop)); // Low speed shoot
-                               
+    
     // Shooter press once
     // operatorXbox.rightBumper().onTrue(Commands.runOnce(shooter::shootHigh)); // High speed shoot
     // operatorXbox.rightTrigger().onTrue(Commands.runOnce(shooter::shootLow)); // Low speed shoot
@@ -157,7 +166,7 @@ public class RobotContainer {
 
     // Midstage
     operatorXbox.leftBumper().whileTrue(Commands.runOnce(midstage::start))
-        .onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
+                             .onFalse(Commands.runOnce(midstage::stop)); // Spin midstage while pressed
   }
 
   /**
