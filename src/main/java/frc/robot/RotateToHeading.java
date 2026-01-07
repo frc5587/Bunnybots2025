@@ -1,6 +1,10 @@
+package frc.robot;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * Overrides the driver's rotation input to point the robot in a specific direction.
@@ -28,20 +32,22 @@ public class RotateToHeading extends Command {
 
   @Override
   public void execute() {
-    if (Math.abs(currentHeading - targetHeading) > errorMargin) {
+    if (Math.abs(swerve.getHeading().getDegrees() - targetHeading) > errorMargin) {
       lastInstantOutOfRange = Instant.now();
     }
   }
 
   @Override
   public boolean isFinished() {
-    double currentHeading = swerve.getHeading(); // Psuedocode
     Duration timeElapsed = Duration.between(lastInstantOutOfRange, Instant.now());
+    double secondsElapsed = timeElapsed.getSeconds() + (timeElapsed.getNano()/1000000000.0);
+
+    double currentHeading = swerve.getHeading().getDegrees();
     boolean isInRange = Math.abs(currentHeading - targetHeading) < errorMargin;
 
     boolean isDisabled = swerve.getIsOverrideHeading() == false;
     
-    return (isDisabled)  ||  (isInRange  &&  timeElapsed < timeMargin);
+    return (isDisabled)  ||  (isInRange  &&  secondsElapsed < timeMargin);
   }
 
   @Override

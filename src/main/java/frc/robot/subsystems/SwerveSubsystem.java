@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.swervedrive;
+package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
@@ -15,9 +15,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.DriveFeedforwards;
-import com.pathplanner.lib.util.swerve.SwerveSetpoint;
-import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -46,13 +43,9 @@ import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.json.simple.parser.ParseException;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -71,7 +64,7 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * IMU
    */
-  private final AHRS navx;
+  private AHRS navx;
   /**
    * Enable vision odometry updates while driving.
    */
@@ -84,8 +77,8 @@ public class SwerveSubsystem extends SubsystemBase {
                                    0.254,
                                    0.095,
                                    new Rotation3d(0.0, Units.degreesToRadians(30), 0.0));
-  private final Limelight limelight;
-  private final LimelightPoseEstimator poseEstimator;
+  private Limelight limelight;
+  private LimelightPoseEstimator poseEstimator;
   
   /**
    * Allows us to control the heading with code while letting the driver drive around
@@ -183,8 +176,8 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.updateOdometry();
     }
     
-    if (overrideHeading == false) {
-      idealHeading = heading;
+    if (headingOverrideActive == false) {
+      idealHeading = getHeading().getDegrees();
     }
   }
 
@@ -328,7 +321,7 @@ public class SwerveSubsystem extends SubsystemBase {
         chassisSpeeds = swerveDrive.swerveController.getRawTargetSpeeds(chassisSpeeds.vxMetersPerSecond,
                                                                         chassisSpeeds.vyMetersPerSecond,
                                                                         idealHeading,
-                                                                        getHeading());
+                                                                        getHeading().getDegrees());
       }
       swerveDrive.driveFieldOriented(chassisSpeeds);
     });
