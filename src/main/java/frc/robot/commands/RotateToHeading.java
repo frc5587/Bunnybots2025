@@ -30,7 +30,7 @@ public class RotateToHeading extends Command {
   @Override
   public void initialize() {
     targetHeading = headingSupplier.getAsDouble();
-    swerve.overrideHeading(targetHeading);
+    swerve.overrideHeading(targetHeading, this);
     lastInstantOutOfRange = Instant.now();
   }
 

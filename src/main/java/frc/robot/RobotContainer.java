@@ -24,7 +24,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import java.io.File;
-import java.util.function.DoubleSupplier;
 
 import swervelib.SwerveInputStream;
 
@@ -69,10 +68,10 @@ public class RobotContainer {
    * Clone's the angular velocity input stream and converts it to a fieldRelative
    * input stream.
    */
-  // SwerveInputStream driveDirectAngle =
-  // driveFieldOriented.copy().withControllerHeadingAxis(driverXbox::getRightX,
-  // driverXbox::getRightY)
-  // .headingWhile(true);
+  SwerveInputStream driveDirectAngle =
+  driveFieldOriented.copy().withControllerHeadingAxis(driverXbox::getRightX,
+  driverXbox::getRightY)
+  .headingWhile(true);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -124,19 +123,19 @@ public class RobotContainer {
     // Rotate 90 degrees, aligning with the field
     Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeading()) * 90 + 90, 2, 0.5);
     Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeading()) * 90 - 90, 2, 0.5);
-    Command turnRightAndHold = Commands.runOnce(driveBase::overrideHeading(Math.round(drivebase.getIdealHeading()) * 90 + 90));
-    Command turnLeftAndHold = Commands.runOnce(driveBase::overrideHeading(Math.round(drivebase.getIdealHeading()) * 90 - 90));
+    Command turnRightAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeading()) * 90.0 + 90, null);});
+    Command turnLeftAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeading()) * 90.0 - 90, null);});
     driverXbox.rightBumper().onTrue(maintainHeading ? turnRightAndHold : turnRight);
     driverXbox.leftBumper().onTrue(maintainHeading ? turnLeftAndHold : turnLeft);
 
     // Holds the current heading when maintainHeading is toggled on
-    driverXbox.rightStick().onTrue(Commands.runonce(() -> {
+    driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
         maintainHeading = !maintainHeading;
         if (maintainHeading) {
-          driveBase.overrideHeading(driveBase.getIdealHeading());
+          drivebase.overrideHeading(drivebase.getIdealHeading(), null);
         }
         else {
-          driveBase.deactivateOverrideHeading();
+          drivebase.deactivateOverrideHeading();
         }}));
 
     // Stuff
