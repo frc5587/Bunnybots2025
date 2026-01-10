@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -12,17 +13,13 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RotateToHeading extends Command {
   private final SwerveSubsystem swerve;
   private final DoubleSupplier headingSupplier;
-  private final double errorMargin;
-  private final double secondsWithinMargin;
 
   private double targetHeadingRadians;
   private double lastTimeOutOfRange;
   
-  public RotateToHeading(SwerveSubsystem _swerve, DoubleSupplier _headingSupplier, double _errorMargin, double _secondsWithinMargin) {
+  public RotateToHeading(SwerveSubsystem _swerve, DoubleSupplier _headingSupplier) {
     swerve = _swerve;
     headingSupplier = _headingSupplier;
-    errorMargin = _errorMargin;
-    secondsWithinMargin = _secondsWithinMargin;
   }
   
   @Override
@@ -34,7 +31,7 @@ public class RotateToHeading extends Command {
 
   @Override
   public void execute() {
-    if (Math.abs(swerve.getHeading().getDegrees() - targetHeadingRadians) > errorMargin) {
+    if (Math.abs(swerve.getHeading().getDegrees() - targetHeadingRadians) > DrivebaseConstants.HEADING_ERROR_MARGIN_RADIANS) {
       lastTimeOutOfRange = Timer.getFPGATimestamp();
     }
   }
@@ -44,11 +41,11 @@ public class RotateToHeading extends Command {
     double secondsElapsed = Timer.getFPGATimestamp() - lastTimeOutOfRange;
 
     double currentHeading = swerve.getHeading().getDegrees();
-    boolean isInRange = Math.abs(currentHeading - targetHeadingRadians) < errorMargin;
+    boolean isInRange = Math.abs(currentHeading - targetHeadingRadians) < DrivebaseConstants.HEADING_ERROR_MARGIN_RADIANS;
 
     boolean isDisabled = swerve.getIsOverrideHeading() == false;
     
-    return (isDisabled)  ||  (isInRange  &&  secondsElapsed < secondsWithinMargin);
+    return (isDisabled)  ||  (isInRange  &&  secondsElapsed < DrivebaseConstants.HEADING_SECONDS_WITHIN_MARGIN);
   }
 
   @Override

@@ -121,18 +121,18 @@ public class RobotContainer {
     }
 
     // Rotate 90 degrees, aligning with the field
-    Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * 90 + 90, 2, 0.5);
-    Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * 90 - 90, 2, 0.5);
-    Command turnRightAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * 90.0 + 90, null);});
-    Command turnLeftAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * 90.0 - 90, null);});
+    Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 - Math.PI/2);
+    Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 + Math.PI/2);
+    Command turnRightAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 - Math.PI/2, null);});
+    Command turnLeftAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 + Math.PI/2, null);});
     driverXbox.rightBumper().onTrue(maintainHeading ? turnRightAndHold : turnRight);
     driverXbox.leftBumper().onTrue(maintainHeading ? turnLeftAndHold : turnLeft);
 
     // Dpad to rotate robot
-    driverXbox.povUp().onTrue(new RotateToHeading(drivebase, () -> 0., 5, 0.5));
-    driverXbox.povRight().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2., 5, 0.5));
-    driverXbox.povDown().onTrue(new RotateToHeading(drivebase, () -> -1. * Math.PI, 5, 0.5));
-    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> Math.PI / 2., 5, 0.5));
+    driverXbox.povUp().onTrue(new RotateToHeading(drivebase, () -> 0.));
+    driverXbox.povRight().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2.));
+    driverXbox.povDown().onTrue(new RotateToHeading(drivebase, () -> -1. * Math.PI));
+    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> Math.PI / 2.));
 
     // Holds the current heading when maintainHeading is toggled on
     driverXbox.rightStick().onTrue(Commands.runOnce(() -> {

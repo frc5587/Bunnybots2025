@@ -29,10 +29,14 @@ public final class Constants {
 //  }
 
   public static final class DrivebaseConstants {
+    // Robot stuff
     public static final double WHEEL_LOCK_TIME = 10.0; // Hold time on motor brakes when disabled in seconds
     public static final double ROBOT_MASS = (79+10.4) * 0.453592; // (79lb robot + 2x5.2lb bumpers) * kg per pound
     public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
     public static final double MAX_SPEED  = Units.feetToMeters(14.5); // Maximum speed of the robot in meters per second, used to limit acceleration.
+    // Rotate to heading
+    public static final double HEADING_ERROR_MARGIN_RADIANS = Units.degreesToRadians(5);
+    public static final double HEADING_SECONDS_WITHIN_MARGIN = 0.5;
   }
 
   public static class OperatorConstants {
@@ -40,7 +44,6 @@ public final class Constants {
     public static final double DEADBAND        = 0.1;
     public static final double LEFT_Y_DEADBAND = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
-    public static final double TURN_CONSTANT    = 6;
   }
 
   public static class ShooterConstants{
