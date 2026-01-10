@@ -87,7 +87,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * Allows us to control the heading with code while letting the driver drive around
    */
   private boolean headingOverrideActive = false;
-  private double  idealHeading = 0;
+  private double  idealHeadingRadians = 0;
   private Command headingOverrideCommand = null;
 
   /**
@@ -181,7 +181,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     
     if (headingOverrideActive == false) {
-      idealHeading = getHeading().getDegrees();
+      idealHeadingRadians = getHeading().getDegrees();
     }
   }
 
@@ -298,7 +298,7 @@ public class SwerveSubsystem extends SubsystemBase {
       CommandScheduler.getInstance().cancel(headingOverrideCommand);
     }
     headingOverrideActive = true;
-    idealHeading = _idealHeading;
+    idealHeadingRadians = _idealHeading;
     headingOverrideCommand = _headingOverrideCommand;
   }
 
@@ -316,8 +316,8 @@ public class SwerveSubsystem extends SubsystemBase {
     return headingOverrideActive;
   }
 
-  public double getIdealHeading() {
-    return idealHeading;
+  public double getIdealHeadingRadians() {
+    return idealHeadingRadians;
   }
   
   /**
@@ -332,7 +332,7 @@ public class SwerveSubsystem extends SubsystemBase {
       if (headingOverrideActive) {
         chassisSpeeds = swerveDrive.swerveController.getRawTargetSpeeds(chassisSpeeds.vxMetersPerSecond,
                                                                         chassisSpeeds.vyMetersPerSecond,
-                                                                        Units.degreesToRadians(idealHeading),
+                                                                        idealHeadingRadians,
                                                                         getHeading().getRadians());
       }
       swerveDrive.driveFieldOriented(chassisSpeeds);

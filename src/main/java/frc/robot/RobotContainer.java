@@ -121,10 +121,10 @@ public class RobotContainer {
     }
 
     // Rotate 90 degrees, aligning with the field
-    Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeading()) * 90 + 90, 2, 0.5);
-    Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeading()) * 90 - 90, 2, 0.5);
-    Command turnRightAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeading()) * 90.0 + 90, null);});
-    Command turnLeftAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeading()) * 90.0 - 90, null);});
+    Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * 90 + 90, 2, 0.5);
+    Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * 90 - 90, 2, 0.5);
+    Command turnRightAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * 90.0 + 90, null);});
+    Command turnLeftAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * 90.0 - 90, null);});
     driverXbox.rightBumper().onTrue(maintainHeading ? turnRightAndHold : turnRight);
     driverXbox.leftBumper().onTrue(maintainHeading ? turnLeftAndHold : turnLeft);
 
@@ -138,7 +138,7 @@ public class RobotContainer {
     driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
         maintainHeading = !maintainHeading;
         if (maintainHeading) {
-          drivebase.overrideHeading(drivebase.getIdealHeading(), null);
+          drivebase.overrideHeading(drivebase.getIdealHeadingRadians(), null);
         }
         else {
           drivebase.deactivateOverrideHeading();
