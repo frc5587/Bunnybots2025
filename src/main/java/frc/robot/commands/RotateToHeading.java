@@ -15,7 +15,7 @@ public class RotateToHeading extends Command {
   private final double errorMargin;
   private final double secondsWithinMargin;
 
-  private double targetHeading;
+  private double targetHeadingRadians;
   private double lastTimeOutOfRange;
   
   public RotateToHeading(SwerveSubsystem _swerve, DoubleSupplier _headingSupplier, double _errorMargin, double _secondsWithinMargin) {
@@ -27,14 +27,14 @@ public class RotateToHeading extends Command {
   
   @Override
   public void initialize() {
-    targetHeading = headingSupplier.getAsDouble();
-    swerve.overrideHeading(targetHeading, this);
+    targetHeadingRadians = headingSupplier.getAsDouble();
+    swerve.overrideHeading(targetHeadingRadians, this);
     lastTimeOutOfRange = Timer.getFPGATimestamp();
   }
 
   @Override
   public void execute() {
-    if (Math.abs(swerve.getHeading().getDegrees() - targetHeading) > errorMargin) {
+    if (Math.abs(swerve.getHeading().getDegrees() - targetHeadingRadians) > errorMargin) {
       lastTimeOutOfRange = Timer.getFPGATimestamp();
     }
   }
@@ -44,7 +44,7 @@ public class RotateToHeading extends Command {
     double secondsElapsed = Timer.getFPGATimestamp() - lastTimeOutOfRange;
 
     double currentHeading = swerve.getHeading().getDegrees();
-    boolean isInRange = Math.abs(currentHeading - targetHeading) < errorMargin;
+    boolean isInRange = Math.abs(currentHeading - targetHeadingRadians) < errorMargin;
 
     boolean isDisabled = swerve.getIsOverrideHeading() == false;
     

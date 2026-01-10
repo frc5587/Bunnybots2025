@@ -334,7 +334,9 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                         chassisSpeeds.vyMetersPerSecond,
                                                                         idealHeadingRadians,
                                                                         getHeading().getRadians());
+
       }
+      // chassisSpeeds.omegaRadiansPerSecond *= -1;
       swerveDrive.driveFieldOriented(chassisSpeeds);
     });
   }

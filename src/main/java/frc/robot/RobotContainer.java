@@ -51,7 +51,7 @@ public class RobotContainer {
   SwerveInputStream driveFieldOriented = SwerveInputStream.of(drivebase.getSwerveDrive(),
       () -> driverXbox.getLeftY() * -1,
       () -> driverXbox.getLeftX() * -1)
-      .withControllerRotationAxis(driverXbox::getRightX)
+      .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8)
       .allianceRelativeControl(true)
@@ -132,7 +132,7 @@ public class RobotContainer {
     driverXbox.povUp().onTrue(new RotateToHeading(drivebase, () -> 0., 5, 0.5));
     driverXbox.povRight().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2., 5, 0.5));
     driverXbox.povDown().onTrue(new RotateToHeading(drivebase, () -> -1. * Math.PI, 5, 0.5));
-    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2., 5, 0.5));
+    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> Math.PI / 2., 5, 0.5));
 
     // Holds the current heading when maintainHeading is toggled on
     driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
