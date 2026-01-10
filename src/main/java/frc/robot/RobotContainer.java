@@ -129,10 +129,10 @@ public class RobotContainer {
     driverXbox.leftBumper().onTrue(maintainHeading ? turnLeftAndHold : turnLeft);
 
     // Dpad to rotate robot
-    driverXbox.povUp().onTrue(new RotateToHeading(drivebase, () -> 0, 5, 0.5));
-    driverXbox.povRight().onTrue(new RotateToHeading(drivebase, () -> 90, 5, 0.5));
-    driverXbox.povDown().onTrue(new RotateToHeading(drivebase, () -> 180, 5, 0.5));
-    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> 270, 5, 0.5));
+    driverXbox.povUp().onTrue(new RotateToHeading(drivebase, () -> 0., 5, 0.5));
+    driverXbox.povRight().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2., 5, 0.5));
+    driverXbox.povDown().onTrue(new RotateToHeading(drivebase, () -> -1. * Math.PI, 5, 0.5));
+    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2., 5, 0.5));
 
     // Holds the current heading when maintainHeading is toggled on
     driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
