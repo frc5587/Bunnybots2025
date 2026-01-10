@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8121955045231624,
-        "y": 7.718145728164417
+        "x": 2.819467285305125,
+        "y": 7.599825751220769
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.268391751520904,
-        "y": 7.7248255274625715
+        "x": 4.275663532302866,
+        "y": 7.606505550518924
       },
       "isLocked": false,
       "linkedName": "Halfway"
@@ -58,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "High Goals",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -49,7 +49,7 @@ public final class Constants
   public static class ShooterConstants{
     public static final int SHOOTER_ID= 30; 
     public static final double SHOOTER_SPEED_HIGH = 1.0;
-    public static final double SHOOTER_SPEED_LOW = 0.5;
+    public static final double SHOOTER_SPEED_LOW = 0.3;
     public static final double SHOOTER_SPEED_REVERSE = 0.2;
     public static final double SPINUP_WAIT_TIME = 1;
     public static final boolean SHOOTER_INVERTED = true;

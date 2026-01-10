@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0192692827659604,
-        "y": 7.718145728164417
+        "x": 3.01853822177778,
+        "y": 7.599825751220769
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.816135293969595,
-        "y": 7.798303319742274
+        "x": 4.815404232981415,
+        "y": 7.679983342798627
       },
       "isLocked": false,
       "linkedName": "3 Quarters"
@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 13.402359198145371,
-        "y": 0.8997918588979541
+        "y": 0.8997918588979542
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "High Goals",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

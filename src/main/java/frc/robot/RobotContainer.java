@@ -38,6 +38,20 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private SendableChooser<Command> autoChooser;
+  private Command loadLunite = Commands.parallel(Commands.runOnce(midstage::start),
+                                                                       Commands.waitSeconds(0.1))
+                                                     .andThen(Commands.parallel(Commands.runOnce(midstage::stop),
+                                                                                Commands.waitSeconds(0.5)))
+                                                     .andThen(Commands.parallel(Commands.runOnce(midstage::reverse),
+                                                                                Commands.runOnce(shooter::reverse),
+                                                                                Commands.waitSeconds(0.3)))
+                                                     .andThen(Commands.parallel(Commands.runOnce(midstage::stop),
+                                                                                Commands.waitSeconds(0.5)));
+  private Command shooterHigh = Commands.parallel(Commands.runOnce(shooter::shootHigh, shooter),
+                                                  Commands.waitSeconds(ShooterConstants.SPINUP_WAIT_TIME));
+  private Command shooterLow = Commands.parallel(Commands.runOnce(shooter::shootLow, shooter),
+                                                  Commands.waitSeconds(ShooterConstants.SPINUP_WAIT_TIME));
+  private Command shooterStop = Commands.runOnce(shooter::stop, shooter);
   // private final LEDController ledController = new LEDController();
 
   /**
@@ -51,7 +65,7 @@ public class RobotContainer
                                                                 -1's were changed to 1's
                                                                 */
                                                                 () -> driverXbox.getLeftX() * 1)
-                                                            .withControllerRotationAxis(driverXbox::getRightX)
+                                                            .withControllerRotationAxis(()->driverXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true)
@@ -84,13 +98,23 @@ public class RobotContainer
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Register Named Commands
-    NamedCommands.registerCommand("shooterHighGoal", Commands.parallel(Commands.runOnce(shooter::shootHigh, shooter),
-                                                                            Commands.waitSeconds(ShooterConstants.SPINUP_WAIT_TIME)));
-    NamedCommands.registerCommand("shooterLowGoal", Commands.runOnce(shooter::shootLow, shooter));
-    NamedCommands.registerCommand("shooterStop", Commands.runOnce(shooter::stop, shooter));
-    NamedCommands.registerCommand("loadLunites", Commands.parallel(Commands.runOnce(midstage::start),
-                                                                        (Commands.waitSeconds(MidstageConstants.LOAD_TIME)))
-                                                                        .andThen(Commands.runOnce(midstage::stop)));
+    NamedCommands.registerCommand("shooterHighGoal", shooterHigh);
+    NamedCommands.registerCommand("shooterLowGoal", shooterLow);
+    NamedCommands.registerCommand("shooterStop", shooterStop);
+    // NamedCommands.registerCommand("shootLow",  Commands.sequence(shooterLow,
+    //                                                                   loadLunite,shooterLow,
+    //                                                                   loadLunite,shooterLow,
+    //                                                                   loadLunite,shooterLow,
+    //                                                                   loadLunite,shooterStop));
+    
+    // NamedCommands.registerCommand("shootHigh", Commands.sequence(shooterLow,
+    //                                                                   loadLunite, shooterLow,
+    //                                                                   loadLunite, shooterLow,
+    //                                                                   loadLunite, shooterLow,
+    //                                                                   loadLunite, shooterStop));
+    NamedCommands.registerCommand("startMidstage",Commands.runOnce(midstage::start));
+    NamedCommands.registerCommand("stopMidstage", Commands.runOnce(midstage::stop));
+    NamedCommands.registerCommand("loadLunite", loadLunite);
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -109,7 +133,7 @@ public class RobotContainer
     Command driveFieldOriented = drivebase.driveFieldOriented(fieldOriented);
     Command driveRobotOriented  = drivebase.driveFieldOriented(robotOriented);
 
-      drivebase.setDefaultCommand(driveRobotOriented); // this is the main drive command
+      drivebase.setDefaultCommand(driveFieldOriented); // this is the main drive command
 
     if (DriverStation.isTest())
     {
@@ -129,9 +153,6 @@ public class RobotContainer
         () -> fieldOriented.scaleTranslation(.5).scaleRotation(.5), 
         () -> fieldOriented.scaleTranslation(.8).scaleRotation(1.)
         ));
-    driverXbox.leftTrigger().whileTrue(Commands.runEnd(
-        () -> fieldOriented.scaleTranslation(.5).scaleRotation(.5),
-        () -> fieldOriented.scaleTranslation(.8).scaleRotation(1.)));
 
     // Reverse
     operatorXbox.leftTrigger().whileTrue(Commands.runOnce(shooter::reverse).alongWith(Commands.runOnce(midstage::reverse)))

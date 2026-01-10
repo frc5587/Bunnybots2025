@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterLowGoal"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startMidstage"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopMidstage"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.6
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startMidstage"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopMidstage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterStop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back Up (halfway)"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Halfway to SS"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Test",
+  "choreoAuto": false
+}

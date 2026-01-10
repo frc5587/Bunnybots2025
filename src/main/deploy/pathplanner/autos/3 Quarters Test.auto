@@ -7,19 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterLowGoal"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "loadLunites"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStop"
+            "name": "shootLow"
           }
         },
         {
@@ -38,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Low",
   "choreoAuto": false
 }

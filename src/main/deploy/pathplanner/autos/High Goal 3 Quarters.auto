@@ -13,19 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterHighGoal"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "loadLunites"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStop"
+            "name": "shootHigh"
           }
         },
         {
@@ -38,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "High",
   "choreoAuto": false
 }
