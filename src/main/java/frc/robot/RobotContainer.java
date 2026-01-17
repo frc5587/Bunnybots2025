@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.MidstageConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.RotateToHeading;
 import frc.robot.subsystems.Midstage;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -121,18 +120,18 @@ public class RobotContainer {
     }
 
     // Rotate 90 degrees, aligning with the field
-    Command turnRight = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 - Math.PI/2);
-    Command turnLeft = new RotateToHeading(drivebase, () -> Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 + Math.PI/2);
-    Command turnRightAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 - Math.PI/2, null);});
-    Command turnLeftAndHold = Commands.runOnce(() -> {drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI/2 + Math.PI/2, null);});
-    driverXbox.rightBumper().onTrue(maintainHeading ? turnRightAndHold : turnRight);
-    driverXbox.leftBumper().onTrue(maintainHeading ? turnLeftAndHold : turnLeft);
+    driverXbox.rightBumper().onTrue(Commands.runOnce(() -> {
+      drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI / 2 - Math.PI / 2, null);
+    }));
+    driverXbox.leftBumper().onTrue(Commands.runOnce(() -> {
+      drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI / 2 + Math.PI / 2, null);
+    }));
 
     // Dpad to rotate robot
-    driverXbox.povUp().onTrue(new RotateToHeading(drivebase, () -> 0.));
-    driverXbox.povRight().onTrue(new RotateToHeading(drivebase, () -> Math.PI / -2.));
-    driverXbox.povDown().onTrue(new RotateToHeading(drivebase, () -> -1. * Math.PI));
-    driverXbox.povLeft().onTrue(new RotateToHeading(drivebase, () -> Math.PI / 2.));
+    driverXbox.povUp().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(0., null);}));
+    driverXbox.povRight().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(Math.PI/-2., null);}));
+    driverXbox.povDown().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(-1*Math.PI, null);}));
+    driverXbox.povLeft().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(Math.PI/2., null);}));
 
     // Holds the current heading when maintainHeading is toggled on
     driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
