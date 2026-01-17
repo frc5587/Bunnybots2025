@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -32,7 +31,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -88,7 +86,6 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private boolean headingOverrideActive = false;
   private double  idealHeadingRadians = 0;
-  private Command headingOverrideCommand = null;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -293,13 +290,9 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @param newHeading the new heading in degrees.
    */
-  public void overrideHeading(double _idealHeading, Command _headingOverrideCommand) {
-    if (headingOverrideCommand != null) {
-      CommandScheduler.getInstance().cancel(headingOverrideCommand);
-    }
+  public void overrideHeading(double _idealHeading) {
     headingOverrideActive = true;
     idealHeadingRadians = _idealHeading;
-    headingOverrideCommand = _headingOverrideCommand;
   }
 
   /**
@@ -307,9 +300,6 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void deactivateOverrideHeading() {
     headingOverrideActive = false;
-    if (headingOverrideCommand != null) {
-      CommandScheduler.getInstance().cancel(headingOverrideCommand);
-    }
   }
 
   public boolean getIsOverrideHeading() {

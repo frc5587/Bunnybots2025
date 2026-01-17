@@ -41,7 +41,6 @@ public class RobotContainer {
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   
   private SendableChooser<Command> autoChooser;
-  private boolean maintainHeading = false;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
@@ -119,33 +118,19 @@ public class RobotContainer {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // this is the main drive command
     }
 
-    // Rotate 90 degrees, aligning with the field
-    driverXbox.rightBumper().onTrue(Commands.runOnce(() -> {
-      drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI / 2 - Math.PI / 2, null);
-    }));
-    driverXbox.leftBumper().onTrue(Commands.runOnce(() -> {
-      drivebase.overrideHeading(Math.round(drivebase.getIdealHeadingRadians()) * Math.PI / 2 + Math.PI / 2, null);
-    }));
-
     // Dpad to rotate robot
-    driverXbox.povUp().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(0., null);}));
-    driverXbox.povRight().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(Math.PI/-2., null);}));
-    driverXbox.povDown().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(-1*Math.PI, null);}));
-    driverXbox.povLeft().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(Math.PI/2., null);}));
+    driverXbox.povUp().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(0.);}));
+    driverXbox.povRight().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(Math.PI/-2.);}));
+    driverXbox.povDown().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(-1*Math.PI);}));
+    driverXbox.povLeft().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(Math.PI/2.);}));
 
     // Holds the current heading when maintainHeading is toggled on
-    driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
-        maintainHeading = !maintainHeading;
-        if (maintainHeading) {
-          drivebase.overrideHeading(drivebase.getIdealHeadingRadians(), null);
-        }
-        else {
-          drivebase.deactivateOverrideHeading();
-        }}));
+    driverXbox.leftBumper().onTrue(Commands.runOnce(() -> {drivebase.overrideHeading(drivebase.getIdealHeadingRadians());}));
+    driverXbox.rightBumper().onTrue(Commands.runOnce(() -> {drivebase.deactivateOverrideHeading();}));
 
     // Stuff
-    driverXbox.b().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-    driverXbox.a().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+    driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+    driverXbox.back().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
 
     // Slow mode
     driverXbox.leftTrigger().whileTrue(Commands.runEnd(
