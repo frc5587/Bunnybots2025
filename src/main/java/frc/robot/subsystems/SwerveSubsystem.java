@@ -42,6 +42,7 @@ import limelight.networktables.LimelightPoseEstimator;
 import limelight.networktables.LimelightSettings.LEDMode;
 import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
+import limelight.networktables.LimelightPoseEstimator.EstimationMode;
 
 import java.io.File;
 import java.util.Arrays;
@@ -127,7 +128,8 @@ public class SwerveSubsystem extends SubsystemBase {
                .withLimelightLEDMode(LEDMode.PipelineControl)
                .withCameraOffset(cameraOffset)
                .save();
-      poseEstimator = limelight.getPoseEstimator(true);
+      poseEstimator = limelight.createPoseEstimator(EstimationMode.MEGATAG2);
+      
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
