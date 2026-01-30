@@ -10,13 +10,13 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
-public class Shooter extends SubsystemBase{
+public class Shooter extends SubsystemBase {
 
     private final SparkMax motor = new SparkMax(ShooterConstants.SHOOTER_ID, MotorType.kBrushless);
     public static SparkMaxConfig shooterConfig = new SparkMaxConfig();
     private double shooterVelocityHigh = ShooterConstants.SHOOTER_SPEED_HIGH;
     private double shooterVelocityLow = ShooterConstants.SHOOTER_SPEED_LOW;
-    public Shooter(){
+    public Shooter() {
         super();
         configureShooter();
         // SmartDashboard.putNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase{
 
     }
 
-    public void configureShooter(){
+    public void configureShooter() {
         shooterConfig.inverted(ShooterConstants.SHOOTER_INVERTED);
         shooterConfig.smartCurrentLimit(ShooterConstants.SHOOTER_STALL_LIMIT,ShooterConstants.SHOOTER_FREE_LIMIT);//maybe 
         shooterConfig.idleMode(IdleMode.kCoast);
@@ -36,15 +36,15 @@ public class Shooter extends SubsystemBase{
     //     return shooterVelocity;
     // }
 
-    public void shootHigh(){
+    public void shootHigh() {
         motor.set(shooterVelocityHigh);
     }    
 
-    public void shootLow(){
+    public void shootLow() {
         motor.set(shooterVelocityLow);
     }
 
-    public void stop(){
+    public void stop() {
         motor.set(0); //TODO switch to setvoltage
     }
 
@@ -53,7 +53,7 @@ public class Shooter extends SubsystemBase{
     }
 
     @Override
-     public void periodic(){     //for testing
+     public void periodic() {     //for testing
     //     if(SmartDashboard.getBoolean("Shooter Velocity Change", false)){
     //         shooterVelocity = SmartDashboard.getNumber("Shooter Velocity", ShooterConstants.DEFAULT_SHOOTER_VELOCITY);
     //     }

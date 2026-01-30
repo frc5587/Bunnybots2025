@@ -126,7 +126,8 @@
 //     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
 //       if (i < litLeds) {
 //         m_ledBuffer.setRGB(i, r, g, b);
-//       } else {
+//       } 
+//       else {
 //         m_ledBuffer.setRGB(i, 0, 0, 0);
 //       }
 //     }
@@ -224,7 +225,8 @@
 //     boolean on = ((int) (t / 0.5)) % 2 == 0; // 0.5s on, 0.5s off
 //     if (on) {
 //       applyColorSolid(blinkColorR, blinkColorG, blinkColorB, LEDConstants.kLedLength);
-//     } else {
+//     } 
+//     else {
 //       applyColorSolid(blinkColorR2, blinkColorG2, blinkColorB2, LEDConstants.kLedLength);
 //     }
 //   }
